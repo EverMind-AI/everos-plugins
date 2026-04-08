@@ -1,0 +1,15 @@
+{
+  "name": "everos-plugins",
+  "description": "Official EverOS SDK tools: migration, upgrade, and development skills",
+  "version": "1.0.0",
+  "owner": {
+    "name": "EverMind AI"
+  },
+  "plugins": [
+    {
+      "name": "everos-sdk-upgrade",
+      "source": "./plugins/everos-sdk-upgrade",
+      "description": "Auto-migrate EverOS SDK between versions (Python only; Go/TS planned)."
+    }
+  ]
+}
