@@ -1,7 +1,8 @@
 {
   "name": "everos-plugins",
-  "description": "Official EverOS SDK tools: migration, upgrade, and development skills",
-  "version": "1.0.0",
+  "metadata": {
+    "description": "Official EverOS SDK tools: migration, upgrade, and development skills"
+  },
   "owner": {
     "name": "EverMind AI"
   },
