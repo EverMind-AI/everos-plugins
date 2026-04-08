@@ -55,6 +55,16 @@ everos-plugins/
 └── README.md
 ```
 
+## Other AI Tools (Cursor, GitHub Copilot, Codex, Gemini CLI, Cline, Amp, Warp, Goose, Junie, and 45+ supported)
+
+This skill follows the [Agent Skills](https://agentskills.io) open standard. Install with one command for 45+ supported tools:
+
+```bash
+npx skills add https://github.com/EverMind-AI/everos-plugins
+```
+
+The CLI will auto-detect your installed tools and copy the skill to the correct directories.
+
 ## Adding Migration Rules
 
 When a new SDK version is released:
