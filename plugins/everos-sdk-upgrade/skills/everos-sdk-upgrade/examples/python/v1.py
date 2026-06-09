@@ -1,12 +1,12 @@
 """
-EverOS SDK v1 (everos) — canonical usage reference (15 scenarios).
+EverOS SDK v1 (everos-cloud) — canonical usage reference (15 scenarios).
 """
 
 import os
 from datetime import datetime, timezone
 
-from everos import EverOS, EverOSError
-from everos.types.v1 import (
+from everos_cloud import EverOS, EverOSError
+from everos_cloud.types.v1 import (
     AddResponse,
     GetMemoriesResponse,
     SearchMemoriesResponse,

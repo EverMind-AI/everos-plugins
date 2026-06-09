@@ -3,7 +3,7 @@ name: everos-sdk-upgrade
 description: >
   Migrate EverOS SDK between versions (Python only; Go/TS planned).
   Auto-detects current version, chains rules to target. TRIGGER when: code
-  imports evermemos/everos, user mentions upgrade/migrate everos, or
+  imports evermemos/everos/everos_cloud, user mentions upgrade/migrate everos, or
   dependencies contain outdated SDK version.
 user-invocable: true
 argument-hint: "[target-version, default: latest]"
@@ -20,13 +20,13 @@ Currently supports **Python only**. Go and TypeScript support is planned.
 Search for EverOS SDK references across all supported languages:
 
 ```
-Grep pattern="evermemos|everos" glob="*.py"
-Grep pattern="evermemos|everos" glob="*.{go,mod}"
-Grep pattern="evermemos|everos" glob="*.{ts,json}"
+Grep pattern="evermemos|everos|everos.cloud|everos_cloud" glob="*.py"
+Grep pattern="evermemos|everos|everos.cloud|everos_cloud" glob="*.{go,mod}"
+Grep pattern="evermemos|everos|everos.cloud|everos_cloud" glob="*.{ts,json}"
 ```
 
 Classify by which files contain SDK references (not just by file existence):
-- **Python**: `evermemos` or `everos` found in `*.py`, `pyproject.toml`, `requirements.txt` → ✓ **supported**
+- **Python**: `evermemos`, `everos`, or `everos_cloud` found in `*.py`, `pyproject.toml`, `requirements.txt` → ✓ **supported**
 - **Go**: `evermemos` or `everos` found in `go.mod`, `*.go` → ✗ **not yet supported**
 - **TypeScript**: `evermemos` or `everos` found in `package.json`, `*.ts` → ✗ **not yet supported**
 
@@ -46,12 +46,12 @@ Then proceed with Python migration if Python SDK usage is also detected.
 Use Grep to search for SDK usage patterns:
 
 ```
-Grep pattern="evermemos|everos" glob="*.{py,toml,txt}"
+Grep pattern="evermemos|everos|everos_cloud" glob="*.{py,toml,txt}"
 ```
 
 Determine version from the patterns found:
 - `evermemos` + `client.v0.` = **v0**
-- `everos` + `client.v1.` = **v1**
+- `everos` or `everos_cloud` + `client.v1.` = **v1**
 - Higher versions: `client.vN.` = **vN**
 
 ## Step 3: Determine target version
@@ -93,7 +93,7 @@ track which types are in use and need renaming.
 
 After code changes, **tell the user** to update their installed package:
 
-- `pip install everos>=<version>` or `uv sync`
+- `pip install everos-cloud>=<version>` or `uv sync`
 
 Do NOT auto-run install commands. The user decides when and how to update.
 

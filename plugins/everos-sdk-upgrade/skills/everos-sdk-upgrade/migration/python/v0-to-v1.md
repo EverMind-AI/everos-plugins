@@ -1,11 +1,11 @@
-# Migration Rules: evermemos (v0) -> everos (v1)
+# Migration Rules: evermemos (v0) -> everos-cloud (v1)
 
 This file contains every breaking change between the two SDK versions.
 Apply rules in the order listed.
 
 ## Contents
 
-- RULE-001: Package Dependency (rename evermemos -> everos)
+- RULE-001: Package Dependency (rename evermemos -> everos-cloud)
 - RULE-002: Environment Variables (EVERMEMOS_API_KEY -> EVEROS_API_KEY)
 - RULE-003: Import Statements (module + type renames)
 - RULE-004: Client Class (EverMemOS -> EverOS)
@@ -39,11 +39,11 @@ evermemos==0.3.13
 **After (v1):**
 ```
 # pyproject.toml
-dependencies = ["everos>=0.1.0"]
+dependencies = ["everos-cloud>=0.1.0"]
 
 # requirements.txt
-everos>=0.1.0
-everos==0.1.1
+everos-cloud>=0.1.0
+everos-cloud==0.1.1
 ```
 
 ### Search Patterns:
@@ -51,7 +51,7 @@ everos==0.1.1
 
 ### Steps:
 1. FIND: `evermemos` in dependency declarations
-2. REPLACE: with `everos`
+2. REPLACE: with `everos-cloud`
 3. Update version constraints to `>=0.1.0`
 
 ---
@@ -104,11 +104,11 @@ from evermemos.types.v0.status import RequestGetResponse
 
 **After (v1):**
 ```python
-import everos
-from everos import EverOS, AsyncEverOS
-from everos import EverOSError
-from everos.types.v1 import AddResponse, GetMemoriesResponse, SearchMemoriesResponse
-from everos.types.v1 import (
+import everos_cloud
+from everos_cloud import EverOS, AsyncEverOS
+from everos_cloud import EverOSError
+from everos_cloud.types.v1 import AddResponse, GetMemoriesResponse, SearchMemoriesResponse
+from everos_cloud.types.v1 import (
     ContentItemParam, MessageItemParam, FlushResponse,
     EpisodeItem, ProfileItem, RawMessageDto,
 )
@@ -117,9 +117,9 @@ from everos.types.v1 import (
 ```
 
 ### Search Patterns (regex):
-- `^import evermemos` -> `import everos`
-- `^from evermemos` -> `from everos`
-- `evermemos\.` -> `everos.`
+- `^import evermemos` -> `import everos_cloud`
+- `^from evermemos` -> `from everos_cloud`
+- `evermemos\.` -> `everos_cloud.`
 - `\.types\.v0` -> `.types.v1`
 - `\.resources\.v0` -> `.resources.v1`
 
@@ -139,7 +139,7 @@ from everos.types.v1 import (
 | `RequestGetResponse` | **REMOVED** | Use `GetTaskStatusResponse` for async tasks |
 
 ### Steps:
-1. FIND all `import evermemos` / `from evermemos` and REPLACE with `everos`
+1. FIND all `import evermemos` / `from evermemos` and REPLACE with `everos_cloud`
 2. FIND `.types.v0` REPLACE `.types.v1`
 3. FIND `.resources.v0` REPLACE `.resources.v1`
 4. Rename type references per mapping table
