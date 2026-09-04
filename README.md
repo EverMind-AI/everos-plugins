@@ -1,37 +1,74 @@
-# everos-plugins
+# everos-tools
 
-Official EverOS SDK tools for AI coding assistants: migration, upgrade, and development skills.
+Official EverOS developer tools for AI coding assistants.
 
 ## Available Plugins
 
 ### everos-sdk-upgrade
 
-Auto-migrate EverOS SDK between versions. Currently supports Python; Go and TypeScript are planned.
+Migrate an EverOS Cloud integration between API/SDK versions.
 
-- Detects SDK language and current version automatically
-- Chains migration rules from current to target version
-- Verifies changes with language-specific compile/test tools
+- **Python SDK** (`everos-cloud` / `evermemos`) — full rule coverage
+- **Raw HTTP callers in any language** — endpoint, payload and response rules
+- Detects the current version and chains rules to the target
+- **Flags capabilities that have no equivalent in the target version** instead of
+  silently dropping or approximating them
+- `--scan` mode produces an impact report without editing anything
 
 ## Installation (Claude Code)
 
 ```bash
 # 1. Add marketplace (one-time)
-/plugin marketplace add EverMind-AI/everos-plugins
+/plugin marketplace add EverMind-AI/everos-tools
 
 # 2. Install the plugin
-/plugin install everos-sdk-upgrade@everos-plugins
+/plugin install everos-sdk-upgrade@everos-tools
 
-# 3. Use it
+# 3. See what a migration would involve, without changing anything
+/everos-sdk-upgrade --scan
+
+# 4. Run it
 /everos-sdk-upgrade
 
-# 4. Update to latest rules
+# 5. Update to the latest rules
 /plugin marketplace update
 ```
+
+## Other AI Tools (Cursor, GitHub Copilot, Codex, Gemini CLI, Cline, Amp, Warp, Goose, Junie, and 45+ supported)
+
+This skill follows the [Agent Skills](https://agentskills.io) open standard. Install with one command:
+
+```bash
+npx skills add https://github.com/EverMind-AI/everos-tools
+```
+
+The CLI auto-detects your installed tools and copies the skill to the correct directories.
+
+## Supported migrations
+
+| Hop | Caller | Rule file |
+|---|---|---|
+| v0 -> v1 (`evermemos` -> `everos-cloud` 0.x) | Python SDK | `migration/python/v0-to-v1.md` |
+| v1 -> v2 (API v1 -> v2) | Any HTTP caller | `migration/http/v1-to-v2.md` |
+| v1 -> v2 (`everos-cloud` 0.4.x -> 1.x) | Python SDK | `migration/python/v1-to-v2.md` |
+
+### A note on version names
+
+Three version numbers move independently, which is a common source of confusion:
+
+| | Old | New |
+|---|---|---|
+| pip package | `everos-cloud` 0.4.x | `everos-cloud` 1.x |
+| Memory API | v1 (`/api/v1/memories/*`) | v2 (`/api/v2/memory/*`) |
+| Rule files here | `v1` | `v2` |
+
+Rule files are named after the **API** version. When describing the upgrade to users,
+say **"everos-cloud 1.x (the v2 Memory API)"** rather than a bare "v2".
 
 ## Repository Structure
 
 ```
-everos-plugins/
+everos-tools/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── plugins/
@@ -42,12 +79,16 @@ everos-plugins/
 │           └── everos-sdk-upgrade/
 │               ├── SKILL.md
 │               ├── migration/
+│               │   ├── http/
+│               │   │   └── v1-to-v2.md      # transport rules — source of truth
 │               │   └── python/
-│               │       └── v0-to-v1.md
+│               │       ├── v0-to-v1.md
+│               │       └── v1-to-v2.md
 │               └── examples/
 │                   └── python/
 │                       ├── v0.py
-│                       └── v1.py
+│                       ├── v1.py
+│                       └── v2.py
 ├── .github/
 │   └── workflows/
 │       └── validate-plugins.yml
@@ -55,26 +96,37 @@ everos-plugins/
 └── README.md
 ```
 
-## Other AI Tools (Cursor, GitHub Copilot, Codex, Gemini CLI, Cline, Amp, Warp, Goose, Junie, and 45+ supported)
-
-This skill follows the [Agent Skills](https://agentskills.io) open standard. Install with one command for 45+ supported tools:
-
-```bash
-npx skills add https://github.com/EverMind-AI/everos-plugins
-```
-
-The CLI will auto-detect your installed tools and copy the skill to the correct directories.
+`SKILL.md`, `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` are
+fixed names required by the Agent Skills standard and the Claude Code plugin spec —
+they are not free to rename.
 
 ## Adding Migration Rules
 
-When a new SDK version is released:
+When a new API or SDK version ships:
 
-1. Add `skills/everos-sdk-upgrade/migration/{lang}/vN-to-vN+1.md` with migration rules
-2. Add `skills/everos-sdk-upgrade/examples/{lang}/vN+1.{ext}` for major versions
-3. Update `plugin.json` version field
-4. Push to this repository
+1. Add `skills/everos-sdk-upgrade/migration/http/vN-to-vN+1.md` — the transport-level
+   rules. This is the source of truth and covers every caller in every language.
+2. Add `skills/everos-sdk-upgrade/migration/{lang}/vN-to-vN+1.md` for each SDK, mapping
+   its method signatures onto the transport rules.
+3. Add `skills/everos-sdk-upgrade/examples/{lang}/vN+1.{ext}` for major versions.
+4. Update the `version` field in `plugin.json`.
+5. Update the version-detection table in `SKILL.md` if the new SDK changed how a
+   version can be recognised from call sites.
+6. Push to this repository.
 
 Users run `/plugin marketplace update` to get the latest rules.
+
+### Rule-writing conventions
+
+- Every rule gets a stable id (`API-0NN` for transport, `SDK-0NN` for Python) so the
+  other files and the generated report can cite it.
+- Mark each rule's **Change Type**: `BREAKING`, `BEHAVIOURAL`, `NEW`, `OPERATIONAL`
+  or `NONE - Informational`.
+- Give **Before/After** code, **Search Patterns**, and **Steps**.
+- A capability removed with no replacement gets an explicit "FLAG, do not rewrite"
+  instruction and suggested comment wording.
+- Note where a claim was verified (published wheel, OpenAPI contract, or live API) so
+  the next person can re-check it.
 
 ## License
 
