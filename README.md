@@ -1,4 +1,4 @@
-# everos-plugins
+# EverOS Tools
 
 Official EverOS SDK tools for AI coding assistants: migration, upgrade, and development skills.
 
